@@ -1,10 +1,13 @@
-import 'package:adv_basics/AnswerButton.dart';
+import 'package:adv_basics/answer_button.dart';
 import 'package:adv_basics/data/questions.dart';
 import 'package:adv_basics/models/quiz_question.dart';
 import 'package:flutter/material.dart';
+import "package:google_fonts/google_fonts.dart";
 
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({super.key});
+  final void Function(String) onAnswer;
+
+  const QuestionScreen({super.key, required this.onAnswer});
 
   @override
   State<QuestionScreen> createState() {
@@ -13,17 +16,18 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
-  List<String> answers = [];
+  int currentQuizQuestionIndex = 0;
 
   QuizQuestion? get currentQuizQuestion {
-    return questions.length > answers.length
-        ? questions.elementAt(answers.length)
+    return questions.length > currentQuizQuestionIndex
+        ? questions.elementAt(currentQuizQuestionIndex)
         : null;
   }
 
   void onAnswer(String answer) {
+    widget.onAnswer(answer);
     setState(() {
-      answers = [...answers, answer];
+      currentQuizQuestionIndex++;
     });
   }
 
@@ -50,7 +54,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
             children: [
               Text(
                 currentQuizQuestion.text,
-                style: const TextStyle(color: Colors.white),
+                style: GoogleFonts.lato(
+                  fontSize: 24,
+                  color: const Color.fromARGB(255, 201, 153, 251),
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),

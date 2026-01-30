@@ -1,4 +1,6 @@
+import 'package:adv_basics/data/questions.dart';
 import 'package:adv_basics/question_screen.dart';
+import 'package:adv_basics/result_screen.dart';
 import 'package:adv_basics/start_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -13,10 +15,27 @@ class Quiz extends StatefulWidget {
 
 class _QuizState extends State<Quiz> {
   var activeScreen = 'start-screen';
+  final List<String> selectedAnswers = [];
 
   void switchScreen() {
     setState(() {
       activeScreen = 'question-screen';
+    });
+  }
+
+  void onAnswer(String answer) {
+    selectedAnswers.add(answer);
+    if (selectedAnswers.length >= questions.length) {
+      setState(() {
+        activeScreen = 'result-screen';
+      });
+    }
+  }
+
+  void onRestartQuiz() {
+    setState(() {
+      activeScreen = 'question-screen';
+      selectedAnswers.clear();
     });
   }
 
@@ -37,7 +56,12 @@ class _QuizState extends State<Quiz> {
           ),
           child: activeScreen == 'start-screen'
               ? StartScreen(switchScreen)
-              : const QuestionScreen(),
+              : activeScreen == 'question-screen'
+              ? QuestionScreen(onAnswer: onAnswer)
+              : ResultScreen(
+                  onRestartQuiz: onRestartQuiz,
+                  selectedAnswers: selectedAnswers,
+                ),
         ),
       ),
     );
